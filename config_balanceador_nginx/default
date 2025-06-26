@@ -1,0 +1,23 @@
+
+# Define el grupo de servidores entre los que se balanceara la carga
+
+#IP del servidor de carlos y saske y puerto de su app
+upstream mis_servidores_app {
+	least_conn;
+	server 192.168.89.102:3000; 
+	server 192.168.89.103:3000;
+}
+
+# Configuracion del servidor principal que escucha las peticiones
+server {
+	listen 80 default_server;
+	listen [::]:80 default_server;
+
+	server_name _;
+	
+	location / {
+		# Pasa la peticion al grupo de servidores definido arriba
+		proxy_pass http://mis_servidores_app;
+	}
+}
+
